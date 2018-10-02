@@ -1,0 +1,109 @@
+"""
+Checkpoint 3 - DAH 2018
+"""
+import time
+#from webiopi.devices.analog.mcp3x0x import MCP3208
+#from webiopi.devices.analog.mcp492X import MCP492X
+import pylab as pl
+import numpy as np
+import math
+
+#ADC0 = MCP3208(chip=0)
+#DAC1 = MCP492X(chip=1, channelCount=2, vref=3.3)
+
+#method for reading voltages from specific channel from ADC
+def readVolt(channel):
+	volt = ADC0.analogReadVolt(channel)
+	return volt
+
+#sets specified voltage on specified channel of DAC	
+def outputVolt(channel, voltage):
+	DAC1.analogWriteVolt(channel, voltage)
+
+#method that plots two lists, with axis titles and main title, and then saves the graph as pdf if save is True
+def plot(x, y, xTitle, yTitle, title, save):
+	pl.plot(x,y)
+	pl.xlabel(xTitle)
+	pl.ylabel(yTitle)
+	pl.title(title)
+	pl.grid(True)
+	if save=="True":
+		savefig(figure.pdf)
+		pl.show()
+	else:
+		pl.show()
+
+#code of 3.2
+def partTwo():
+	#empty lists for data to be appended to
+	voltages = []
+	times =[]
+	#defines start time of method
+	startTime = time.time()
+	#iterates 100 times and reads voltages at specific times and appends to respective lists
+	for i in range(100):
+		voltages.append(self.readVolt(0))
+		elapsedTime = time.time() - startTime
+		times.append(elapsedTime)
+	#plots data from above	
+	plot(times, voltages, "Time [s]", "Voltage Read from ADC [V]", "Graph showing Voltage from Signal Generator Read from ADC v Time", True)
+
+#code for 3.3
+def partThree():
+	#opens file for data to be written to and adds text explaining what the file is
+	outputFile = open("Checkpoint3-3.txt","w")
+	outputFile.write("Output file for Checkpoint 3.3 (part 1) for DAH 2018 \nTime, Voltage")
+	#defines lists for data
+	voltages = []
+	times = []
+	#defines start time of experiment
+	startTime = time.time()
+	#iterates 100 times and reads voltages, time and writes to file and appends to lists
+	for i in range(100):
+		elapsedTime = time.time() - startTime
+		volt = self.readVolt(0)
+		outputFile.write(str(elapsedTime) + "," + str(volt))
+		times.append(elapsedTime)
+		voltages.append(volt)
+		
+	#defines max value of voltage
+	maxVolt = max(voltages)
+	#list to store location of low sections
+	lowSection = []
+	#gets locaiton of lists 
+	for i in range(len(voltages)):
+		if voltages[i] < 0.5*maxVolt:
+			lowSection.append(i)
+	
+	voltagesCopy = voltages
+	bList=[]
+	#method to average over low sections and high sections
+	for i in range(len(lowSection)-1):
+		if lowSection[i] != lowSection[i+1]-1:
+			aList = []
+			for j in range(lowSection[i], lowSection[i+1]):
+				aList.append(voltages[j])
+			averageHighValue = np.mean(aList)
+			for j in range(lowSection[i], lowSection[i+1]):
+				voltagesCopy[j] = averageHighValue
+		else:
+			bList.append(voltages[lowSection[i]])
+	averageLowValue = np.mean(bList)
+	#for i in range(len(lowSection)-1):	
+	
+def partFive():
+	outputVoltages = []
+	for i in range(360):
+		outputVoltages.append(math.sin(np.radians(i)))
+	for i in range(len(outputVoltages)):
+		outputVolt(0,i)
+	
+		
+		
+	
+def main():
+	partTwo()
+	partThree()
+	partFive()
+		
+main()
