@@ -47,10 +47,25 @@ def patternOne():
 		time.sleep(2)
 
 def patternTwo():
-	#code here
+	while True:
+		for i in range(len(leds)):
+			GPIO.output(leds[i], GPIO.HIGH)
+			time.sleep(1)
+			GPIO.output(leds[i], GPIO.LOW)
 	
 def patternThree():
-	#code here
+	mcp.digitalWrite(LED0, GPIO.HIGH)
+	mcp.digitalWrite(LED1, GPIO.HIGH)
+	mcp.digitalWrite(LED2, GPIO.HIGH)
+	mcp.digitalWrite(LED3, GPIO.HIGH)
+	
+	while True:
+		value = not GPIO.input(LED0)
+		
+		for i in range(len(leds)):
+			GPIO.output(leds[i], value)
+		time.sleep(1)
+	
 
 def patternSwitch(pattern):
 	patterns = [patternOne(), patternTwo(), patternThree()]
@@ -91,5 +106,6 @@ def partThree():
 	
 def main():
 	partOne()
-	partTwo()
+	#partTwo()
+	#partThree()
 main()
