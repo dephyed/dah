@@ -11,9 +11,10 @@ import matplotlib.pyplot as plt
 #sets where the arduino is
 ser=serial.Serial('/dev/ttyACM0',115200, timeout=5) 
 time.sleep(1)
-
+#defines conversion factors from measured values
 timeConversionFactor = 0.000375
 frequencyConversionFactor = float(1/timeConversionFactor)
+#defines maximum voltage for conversion
 maxVoltage = 5.0
 
 #function that reads data from arduino and returns numpy array of data
