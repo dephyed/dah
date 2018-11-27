@@ -21,10 +21,10 @@ maxVoltage = 5.0
 def read():
 	#clears buffer memory
 	ser.flushInput()
-	time.sleep(0.5)
+	time.sleep(1)
 	#sets sampling rate
-	ser.write(bytes([4,2]))
-	time.sleep(0.5)
+	ser.write(bytes([255,2]))
+	time.sleep(1)
 	#prompt if using microphone to start playing sound
 	print("SING!")
 	startTime=time.time()
@@ -64,39 +64,27 @@ def voltageConvert(data):
 		voltageData.append((data[i]/maxdata)*maxVoltage)
 	return voltageData
 
-#function that takes data for given repeats and makes one list of data
-def takeData():	
-	i = 0 
-	data = []
-	times = []
-	while i<2:
-		tempData = read()
-		data.extend(tempData.tolist())
-		i+=1
-	print len(data)	
-	return data
-
 #plots time and frequency domains of signal side by side
 def plot(voltList, timeList, transformedData, frequencyList,powerSpectrum):
 	#plt.subplot(1,3,1)
 	plt.plot(timeList, voltList)
 	plt.xlabel("Time [s]")
 	plt.ylabel("Voltage [V]")
-	plt.title("Graph showing voltage versus time of an incoming signal from\n a microphone at 2000Hz\n with a Hanning Window")
+	plt.title("Graph showing voltage versus time of an incoming signal from a \nmicrophone at 2000Hz with a Hanning window")
 	plt.show()
 	
 	#plt.subplot(1,3,2)
 	plt.plot(frequencyList, transformedData)
 	plt.xlabel("Frequency [Hz]")
 	plt.ylabel("Amplitude")
-	plt.title("Graph showing Fourier transform of an incoming signal from\n a microphone at 2000Hz\n with a Hanning window")
+	plt.title("Graph showing Fourier transform of an incoming signal from a \nmicrophone at 2000Hz with a Hanning window")
 	plt.show()
 	
 	#plt.subplot(1,3,3)
 	plt.plot(frequencyList, powerSpectrum)
 	plt.xlabel("Frequency [Hz]")
 	plt.ylabel("Amplitude")
-	plt.title("Graph showing power spectrum of an incoming signal from\n a microphone at 2000Hz\n with a Hanning window")
+	plt.title("Graph showing power spectrum of an incoming signal from a \nmicrophone at 2000Hz with a Hanning window")
 	plt.show()
 
 #writes all the data to file
@@ -105,16 +93,19 @@ def writeToFile(time, data, frequency, transformedData, power, filename):
 	file.write("Data for DATA")
 	file.write("Time, Voltage, Frequency, Amplitdue for Frequency, Amplitude for Power Spectrum")
 	for i in range(len(time)):
-		file.write(time[i] +str(", ") + data[i] +str(", ")+ frequency[i]+str(", ")+transformedData[i]+str(", ")+power[i])
+		file.write(str(time[i]) +str(", ") + str(data[i]) +str(", ")+ str(frequency[i])+str(", ")+str(transformedData[i])+str(", ")+str(power[i]
+		)+str("\n"))
 		
 #function that runs everything else
 def main():
-	repeats = 1
+	repeats = 5
 	totalData = []
 	endPoint = 0
 	for i in range(repeats):
 		#reads data and appends to total list
-		data = takeData()
+		#data = takeData()
+		data = read()
+		print data
 		totalData.extend(data)
 		window = np.hanning(len(totalData))
 		
@@ -127,11 +118,12 @@ def main():
 		#calculates power spectrum
 		absol = np.absolute(transformedData)
 		powerSpectrum = np.square(absol)
-		#write to file
-		filename = "sin.txt"
-		writeToFile(timeList, voltList, frequencyList, transformedData, powerSpectrum, filename)
 		#plot data
 		plot(voltList, timeList, transformedData, frequencyList, powerSpectrum)
-
+	#write to file
+	filename = "microphone2000hz.txt"
+	writeToFile(timeList, voltList, frequencyList, transformedData, powerSpectrum, filename)
 
 main()
+
+
