@@ -24,6 +24,7 @@ def read():
 	#sets sampling rate
 	ser.write(bytes([4,2]))
 	time.sleep(0.5)
+	#prompt if using microphone to start playing sound
 	print("SING!")
 	startTime=time.time()
 	#tells arduino to read 1600 bytes
